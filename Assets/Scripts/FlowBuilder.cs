@@ -66,7 +66,83 @@ public class FlowBuilder : MonoBehaviour {
     #endregion
 
     #region private
-    private void AddNode(GameObject item, Value value) {
+
+    // Adds a new Node to the existing graph using bredth first
+    private void AddNode(GameObject item, Value value)
+    {
+        IqNode newNode = item.GetComponent<IqNode>();
+        Queue<IqNode> q = new Queue<IqNode>();
+
+        if (headNode == null)
+        {
+            headNode = newNode;
+            print("new headnote: " + headNode);
+        }else
+        {
+            q.Enqueue(headNode);
+            print("first enqueue: " + headNode);
+        }
+        IqNode nextParent = null;
+        IqNode tempNode = headNode;
+
+        while (q.Count > 0)
+        {
+            tempNode = q.Dequeue();
+            print("dequeued headnode" + tempNode);
+            // Write code or what
+            if(tempNode.GetInstrucion() != null) print(tempNode.GetInstrucion().GetCode());
+
+            // Check wether the node is a normal or if else node
+            // If Else Node
+            if (tempNode is QNodeIfElse)
+            {
+                // If child
+                if (((QNodeIfElse)tempNode).GetChild() != null)
+                {
+                    q.Enqueue(((QNodeIfElse)tempNode).GetChild());
+                }else
+                {
+                    if(nextParent != null) nextParent = tempNode;
+
+                    // Add New Node
+                    tempNode.SetChild(newNode);
+                    newNode.SetParent(tempNode);
+                }
+
+                // Else child
+                if (((QNodeIfElse)tempNode).GetElseChild() != null)
+                {
+                    q.Enqueue(((QNodeIfElse)tempNode).GetElseChild());
+                }
+                else
+                {
+                    if (nextParent != null) nextParent = tempNode;
+
+                    // Add New Node
+                    ((QNodeIfElse)tempNode).SetElseChild(newNode);
+                    newNode.SetParent(tempNode);
+                }
+            }
+            // Normal Node
+            else if (tempNode is QNode)
+            {
+                if (tempNode.GetChild() != null)
+                {
+                    q.Enqueue(tempNode.GetChild());
+                }
+                else
+                {
+                    if (nextParent != null) nextParent = tempNode;
+
+                    // Add New Node
+                    tempNode.SetChild(newNode);
+                    newNode.SetParent(tempNode);
+                }
+            }
+        }
+    }
+
+    private void AddNodeOld(GameObject item, Value value) {
         IqNode newNode = item.GetComponent<IqNode>();
         if (newNode is QNodeIfElse) {
             newNode = (QNodeIfElse)Instantiate(item.GetComponent<QNodeIfElse>(), transform);
