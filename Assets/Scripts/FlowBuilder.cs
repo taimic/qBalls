@@ -18,6 +18,7 @@ public class FlowBuilder : MonoBehaviour {
     }
 
     public RectTransform placeholderNode;
+    public RectTransform flowPanelRect;
     public List<GameObject> instrucionPrefabs;
 
     private string currentInstruction;
@@ -33,6 +34,7 @@ public class FlowBuilder : MonoBehaviour {
     }
     void Start() {
         instructions = new List<GameObject>();
+        flowPanelRect = GetComponent<RectTransform>();
     }
 
     void Update() {
@@ -70,25 +72,38 @@ public class FlowBuilder : MonoBehaviour {
     // Adds a new Node to the existing graph using bredth first
     private void AddNode(GameObject item, Value value)
     {
-        IqNode newNode = item.GetComponent<IqNode>();
         Queue<IqNode> q = new Queue<IqNode>();
 
+        // Instantiate new Node
+        IqNode newNode = item.GetComponent<IqNode>();
+        if (newNode is QNodeIfElse)
+        {
+            newNode = (QNodeIfElse)Instantiate(item.GetComponent<QNodeIfElse>(), transform);
+            //newNode.SetChild(new QNodeEmpty());
+            //((QNodeIfElse)newNode).SetElseChild(new QNodeEmpty());
+        }
+        else if (newNode is QNode)
+        {
+            newNode = (QNode)Instantiate(item.GetComponent<QNode>(), transform);
+            //newNode.SetChild(new QNodeEmpty());
+        }
+
+        // if First Node set Head
         if (headNode == null)
         {
             headNode = newNode;
-            print("new headnote: " + headNode);
+            DrawNode(((QNode)headNode), 4);
         }else
         {
             q.Enqueue(headNode);
             print("first enqueue: " + headNode);
         }
-        IqNode nextParent = null;
-        IqNode tempNode = headNode;
+        //IqNode nextParent = null;
+        IqNode tempNode;
 
         while (q.Count > 0)
         {
             tempNode = q.Dequeue();
-            print("dequeued headnode" + tempNode);
             // Write code or what
             if(tempNode.GetInstrucion() != null) print(tempNode.GetInstrucion().GetCode());
 
@@ -96,31 +111,32 @@ public class FlowBuilder : MonoBehaviour {
             // If Else Node
             if (tempNode is QNodeIfElse)
             {
+                QNodeIfElse tempIf = ((QNodeIfElse)tempNode);
+
                 // If child
-                if (((QNodeIfElse)tempNode).GetChild() != null)
+                if (tempIf.GetChild() != null)
                 {
-                    q.Enqueue(((QNodeIfElse)tempNode).GetChild());
+                    q.Enqueue(tempIf.GetChild());
                 }else
                 {
-                    if(nextParent != null) nextParent = tempNode;
-
-                    // Add New Node
-                    tempNode.SetChild(newNode);
-                    newNode.SetParent(tempNode);
+                    tempIf.SetChild(newNode);
+                    newNode.SetParent(tempIf);
+                    DrawNode(((QNode)newNode), 1);
+                    return;
                 }
 
                 // Else child
-                if (((QNodeIfElse)tempNode).GetElseChild() != null)
+                if (tempIf.GetElseChild() != null)
                 {
-                    q.Enqueue(((QNodeIfElse)tempNode).GetElseChild());
+                    q.Enqueue(tempIf.GetElseChild());
                 }
                 else
                 {
-                    if (nextParent != null) nextParent = tempNode;
-
                     // Add New Node
-                    ((QNodeIfElse)tempNode).SetElseChild(newNode);
-                    newNode.SetParent(tempNode);
+                    tempIf.SetElseChild(newNode);
+                    newNode.SetParent(tempIf);
+                    DrawNode(((QNode)newNode), 2);
+                    return;
                 }
             }
             // Normal Node
@@ -132,13 +148,68 @@ public class FlowBuilder : MonoBehaviour {
                 }
                 else
                 {
-                    if (nextParent != null) nextParent = tempNode;
-
-                    // Add New Node
                     tempNode.SetChild(newNode);
                     newNode.SetParent(tempNode);
+                    DrawNode(((QNode)newNode), 0);
+                    return;
                 }
             }
+        }
+    }
+
+    // child type 0 = simple child 1 = if child 2 = else child 3 = head node
+    private void DrawNode(QNode node, int childType)
+    {
+        // TODO save dist to parent in Node
+        if(node.GetParent() == null)
+        {
+            node.GetComponent<RectTransform>().localPosition = new Vector2(flowPanelRect.rect.width/2, 0);
+            node.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            return;
+        }
+        RectTransform nodeTransform = node.GetComponent<RectTransform>();
+        
+        RectTransform parentTransform = ((QNode)node.GetParent()).GetComponent<RectTransform>();
+        nodeTransform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+        float distToParentParent;
+        if (node.GetParent().GetParent() == null)
+        {
+            distToParentParent = 0;
+        }else
+        {
+            RectTransform parentParentTransform = ((QNode)node.GetParent().GetParent()).GetComponent<RectTransform>();
+
+            distToParentParent = Mathf.Abs(parentParentTransform.position.x - parentTransform.position.x);
+        }
+
+        switch (childType)
+        {
+            case 0:
+                node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x, parentTransform.localPosition.y - _spacing);
+                break;
+
+            case 1:
+                if (distToParentParent == 0)
+                {
+                    node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x / 2, parentTransform.localPosition.y - _spacing);
+                }else
+                {
+                    node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x - (distToParentParent / 2), parentTransform.localPosition.y - _spacing);
+                }
+                break;
+
+            case 2:
+                
+                if (distToParentParent == 0)
+                {
+                    node.GetComponent<RectTransform>().localPosition = new Vector2((parentTransform.localPosition.x / 2) + parentTransform.localPosition.x, parentTransform.localPosition.y - _spacing);
+                }
+                else
+                {
+                    node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x + (distToParentParent / 2), parentTransform.localPosition.y - _spacing);
+                }
+                break;
         }
     }
 
