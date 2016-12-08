@@ -8,6 +8,7 @@ public class ConnectionManager : MonoBehaviour {
 
     private static ConnectionManager instance;
     private static bool runThread = false;
+    private static bool doRestart = true;
     private static Thread clientThread;
 
     #region unity callbacks
@@ -21,6 +22,7 @@ public class ConnectionManager : MonoBehaviour {
 
     void OnDestroy() {
         TCP_Client.FoundBall -= OnFoundBall;
+        doRestart = false;
         clientThread.Abort();
     }
     #endregion
@@ -36,6 +38,7 @@ public class ConnectionManager : MonoBehaviour {
         runThread = true;
         clientThread = new Thread(Run);
         clientThread.Start();
+        //clientThread.Join();
     }
 
     public static void Run() {
@@ -44,7 +47,8 @@ public class ConnectionManager : MonoBehaviour {
             runThread = false;
         }
         // connection lost - restart thread
-        StartThread();
+        if (doRestart)
+            StartThread();
     }
     #endregion
 }

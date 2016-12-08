@@ -12,4 +12,10 @@ public class InstructionButton : MonoBehaviour {
     {
         FlowBuilder.Instance.CurrentInstruction = this.name;
     }
+
+    void OnTriggerEnter2D(Collider2D other) {
+        if (other.tag == "Ball") {
+            SendInstruction();
+        }
+    }
 }
