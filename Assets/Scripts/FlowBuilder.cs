@@ -161,54 +161,41 @@ public class FlowBuilder : MonoBehaviour {
     private void DrawNode(QNode node, int childType)
     {
         // TODO save dist to parent in Node
+
+        // Draw head node
         if(node.GetParent() == null)
         {
             node.GetComponent<RectTransform>().localPosition = new Vector2(flowPanelRect.rect.width/2, 0);
             node.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            node.Distance = flowPanelRect.rect.width / 2;
             return;
         }
+
+        // Init transforms and set scale and offset
         RectTransform nodeTransform = node.GetComponent<RectTransform>();
-        
         RectTransform parentTransform = ((QNode)node.GetParent()).GetComponent<RectTransform>();
+        QNode parentNode = (QNode)node.GetParent();
         nodeTransform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
-        float distToParentParent;
-        if (node.GetParent().GetParent() == null)
-        {
-            distToParentParent = 0;
-        }else
-        {
-            RectTransform parentParentTransform = ((QNode)node.GetParent().GetParent()).GetComponent<RectTransform>();
+        // Copy Node distance from parent
+        node.Distance = parentNode.Distance;
 
-            distToParentParent = Mathf.Abs(parentParentTransform.position.x - parentTransform.position.x);
-        }
-
+        // child type 0 = simple child 1 = if child 2 = else child 3 = head node
         switch (childType)
         {
             case 0:
+                
                 node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x, parentTransform.localPosition.y - _spacing);
                 break;
 
             case 1:
-                if (distToParentParent == 0)
-                {
-                    node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x / 2, parentTransform.localPosition.y - _spacing);
-                }else
-                {
-                    node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x - (distToParentParent / 2), parentTransform.localPosition.y - _spacing);
-                }
+                node.Distance /= 2;
+                node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x - node.Distance, parentTransform.localPosition.y - _spacing);
                 break;
 
             case 2:
-                
-                if (distToParentParent == 0)
-                {
-                    node.GetComponent<RectTransform>().localPosition = new Vector2((parentTransform.localPosition.x / 2) + parentTransform.localPosition.x, parentTransform.localPosition.y - _spacing);
-                }
-                else
-                {
-                    node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x + (distToParentParent / 2), parentTransform.localPosition.y - _spacing);
-                }
+                node.Distance /= 2;
+                node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x + node.Distance, parentTransform.localPosition.y - _spacing);
                 break;
         }
     }

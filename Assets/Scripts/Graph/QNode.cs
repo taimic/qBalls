@@ -9,8 +9,22 @@ namespace Assets.Scripts.Graph {
     class QNode : MonoBehaviour, IqNode {
         private IqNode _parent, _child;
         private IQInstruction _instruction;
+        private float distance;
 
         public string c1; // TODO: only for debugging
+
+        public float Distance
+        {
+            get
+            {
+                return distance;
+            }
+
+            set
+            {
+                distance = value;
+            }
+        }
 
         public void IsCurrent(bool value) {
             GetComponent<Outline>().enabled = value;

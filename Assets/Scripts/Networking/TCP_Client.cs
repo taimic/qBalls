@@ -16,7 +16,9 @@ public class TCP_Client {
         while (!hasConnection) {
             // connect to server
             try {
-                client = new TcpClient("localhost", 4711);
+                System.Net.IPAddress adress = System.Net.IPAddress.Parse("10.42.1.134");
+                client = new TcpClient();
+                client.Connect(adress, 4711);
             }
             catch {
                 Debug.Log("No server found...");
