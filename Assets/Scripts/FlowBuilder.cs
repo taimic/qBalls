@@ -62,6 +62,7 @@ public class FlowBuilder : MonoBehaviour {
             if (item.name == name) {
                 //AddToList(item);
                 AddNode(item, value);
+                print(item.name + " created");
             }
         }
     }
@@ -96,7 +97,6 @@ public class FlowBuilder : MonoBehaviour {
         }else
         {
             q.Enqueue(headNode);
-            print("first enqueue: " + headNode);
         }
         //IqNode nextParent = null;
         IqNode tempNode;
