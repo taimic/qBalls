@@ -1,9 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MenuManager : MonoBehaviour {
-
     public GameObject energyPanel, instructionPanel;
+    public List<GameObject> ifInstructions;
+
+    void Start() {
+        FlowBuilder.EventAddedIfElseNode += HideIfInstructions;
+        FlowBuilder.EventAddedElseNode += ShowIfInstructions;
+    }
+
+    void OnDestroy() {
+        FlowBuilder.EventAddedIfElseNode -= HideIfInstructions;
+        FlowBuilder.EventAddedElseNode -= ShowIfInstructions;
+    }
 
     public void ShowEnergyPanel() {
         instructionPanel.SetActive(false);
@@ -15,13 +26,13 @@ public class MenuManager : MonoBehaviour {
         energyPanel.SetActive(false);
     }
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    private void HideIfInstructions() {
+        foreach (GameObject item in ifInstructions)
+            item.SetActive(false);
+    }
+
+    private void ShowIfInstructions() {
+        foreach (GameObject item in ifInstructions)
+            item.SetActive(true);
+    }
 }

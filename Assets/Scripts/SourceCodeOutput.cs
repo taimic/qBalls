@@ -12,11 +12,20 @@ public class SourceCodeOutput : MonoBehaviour {
         }
     }
     private Text text;
+    private string initText;
 
 	void Awake () {
         instance = this;
         text = GetComponent<Text>();
 	}
+
+    void Start() {
+        initText = text.text;
+    }
+
+    public void Reset() {
+        text.text = initText;
+    }
 
     public void SetText(string code) {
         if (code == "")

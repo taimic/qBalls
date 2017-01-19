@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Graph;
+using System;
 
 public enum Value {
     No,
@@ -11,9 +12,11 @@ public enum Value {
 }
 
 public class FlowBuilder : MonoBehaviour {
+    public delegate void FlowDelegate();
+    public static event FlowDelegate EventAddedIfElseNode, EventAddedElseNode, EventAddedNode;
+
     private static FlowBuilder instance;
-    public static FlowBuilder Instance
-    {
+    public static FlowBuilder Instance {
         get { return instance; }
     }
 
@@ -22,8 +25,13 @@ public class FlowBuilder : MonoBehaviour {
     public List<GameObject> instrucionPrefabs;
 
     private string currentInstruction;
-    private List<GameObject> instructions;
-    private IqNode headNode, currentNode;
+
+    private List<QNode> instructions;
+    public List<QNode> Instructions {
+        get {
+            return instructions;
+        }
+    }
 
     private float _spacing = 130;
     private int _currentLayer = 0;
@@ -33,26 +41,29 @@ public class FlowBuilder : MonoBehaviour {
         instance = this;
     }
     void Start() {
-        instructions = new List<GameObject>();
+        if (Display.displays.Length > 1)
+            Display.displays[1].Activate();
+        if (Display.displays.Length > 2)
+            Display.displays[2].Activate();
+
+        instructions = new List<QNode>();
         flowPanelRect = GetComponent<RectTransform>();
+
+        CodeManager.EventBotReady += OnBotReady;
+    }
+    void OnDestroy() {
+        CodeManager.EventBotReady -= OnBotReady;
     }
 
-    void Update() {
-        if (Input.GetKeyDown(KeyCode.P))
-            PrintSimpleGraph();
-    }
     #endregion
 
     #region public
-    public string CurrentInstruction
-    {
-        get
-        {
+    public string CurrentInstruction {
+        get {
             return Instance.currentInstruction;
         }
 
-        set
-        {
+        set {
             Instance.currentInstruction = value;
         }
     }
@@ -60,294 +71,93 @@ public class FlowBuilder : MonoBehaviour {
     public void AddInstruction(string name, Value value = Value.No) {
         foreach (GameObject item in instrucionPrefabs) {
             if (item.name == name) {
-                //AddToList(item);
                 AddNode(item, value);
-                print(item.name + " created");
             }
         }
     }
     #endregion
 
     #region private
-
-    // Adds a new Node to the existing graph using bredth first
-    private void AddNode(GameObject item, Value value)
-    {
-        Queue<IqNode> q = new Queue<IqNode>();
-
-        // Instantiate new Node
-        IqNode newNode = item.GetComponent<IqNode>();
-        if (newNode is QNodeIfElse)
-        {
-            newNode = (QNodeIfElse)Instantiate(item.GetComponent<QNodeIfElse>(), transform);
-            //newNode.SetChild(new QNodeEmpty());
-            //((QNodeIfElse)newNode).SetElseChild(new QNodeEmpty());
+    private void OnBotReady() {
+        foreach (QNode item in instructions) {
+            Destroy(item.gameObject);
         }
-        else if (newNode is QNode)
-        {
-            newNode = (QNode)Instantiate(item.GetComponent<QNode>(), transform);
-            //newNode.SetChild(new QNodeEmpty());
+        instructions.Clear();
+    }
+
+    // Adds a new Node to the existing graph using wut
+    private void AddNode(GameObject item, Value value) {
+        QNode newNode = InstantiateInstruction(item, value);
+        SetNodePosition(newNode);
+
+        instructions.Add(newNode);
+
+        if (EventAddedNode != null)
+            EventAddedNode();
+    }
+
+    private QNode InstantiateInstruction(GameObject obj, Value value) {
+        QNode node = obj.GetComponent<QNode>();
+        if (node is QNodeIfElse) {
+            node = Instantiate(obj, transform).GetComponent<QNodeIfElse>();
+            node.Value = value;
+
+            if (EventAddedIfElseNode != null)
+                EventAddedIfElseNode();
         }
+        else {
+            node = Instantiate(obj, transform).GetComponent<QNode>();
+            node.Value = value;
+            // parenting
+            if (instructions.Count > 1) {
+                // set if child
+                if (instructions[instructions.Count - 1] is QNodeIfElse) {
+                    instructions[instructions.Count - 1].SetChild(node);
+                    node.SetParent(instructions[instructions.Count - 1]);
+                } // set else child
+                else if (instructions[instructions.Count - 2] is QNodeIfElse) {
+                    ((QNodeIfElse)instructions[instructions.Count - 2]).SetElseChild(node);
+                    node.SetParent(instructions[instructions.Count - 2]);
 
-        // if First Node set Head
-        if (headNode == null)
-        {
-            headNode = newNode;
-            DrawNode(((QNode)headNode), 4);
-        }else
-        {
-            q.Enqueue(headNode);
-        }
-        //IqNode nextParent = null;
-        IqNode tempNode;
-
-        while (q.Count > 0)
-        {
-            tempNode = q.Dequeue();
-            // Write code or what
-            if(tempNode.GetInstrucion() != null) print(tempNode.GetInstrucion().GetCode());
-
-            // Check wether the node is a normal or if else node
-            // If Else Node
-            if (tempNode is QNodeIfElse)
-            {
-                QNodeIfElse tempIf = ((QNodeIfElse)tempNode);
-
-                // If child
-                if (tempIf.GetChild() != null)
-                {
-                    q.Enqueue(tempIf.GetChild());
-                }else
-                {
-                    tempIf.SetChild(newNode);
-                    newNode.SetParent(tempIf);
-                    DrawNode(((QNode)newNode), 1);
-                    return;
-                }
-
-                // Else child
-                if (tempIf.GetElseChild() != null)
-                {
-                    q.Enqueue(tempIf.GetElseChild());
-                }
-                else
-                {
-                    // Add New Node
-                    tempIf.SetElseChild(newNode);
-                    newNode.SetParent(tempIf);
-                    DrawNode(((QNode)newNode), 2);
-                    return;
+                    if (EventAddedElseNode != null)
+                        EventAddedElseNode();
                 }
             }
-            // Normal Node
-            else if (tempNode is QNode)
-            {
-                if (tempNode.GetChild() != null)
-                {
-                    q.Enqueue(tempNode.GetChild());
-                }
-                else
-                {
-                    tempNode.SetChild(newNode);
-                    newNode.SetParent(tempNode);
-                    DrawNode(((QNode)newNode), 0);
-                    return;
+            else if (instructions.Count > 0) {
+                // set if child
+                if (instructions[0] is QNodeIfElse) {
+                    instructions[0].SetChild(node);
+                    node.SetParent(instructions[0]);
                 }
             }
         }
+
+        node.name = obj.name;
+        return node;
     }
 
-    // child type 0 = simple child 1 = if child 2 = else child 3 = head node
-    private void DrawNode(QNode node, int childType)
-    {
-        // TODO save dist to parent in Node
+    private void SetNodePosition(QNode node) {
+        float halfWidth = flowPanelRect.rect.width / 2;
 
-        // Draw head node
-        if(node.GetParent() == null)
-        {
-            node.GetComponent<RectTransform>().localPosition = new Vector2(flowPanelRect.rect.width/2, 0);
-            node.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            node.Distance = flowPanelRect.rect.width / 2;
-            return;
-        }
+        node.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
-        // Init transforms and set scale and offset
-        RectTransform nodeTransform = node.GetComponent<RectTransform>();
-        RectTransform parentTransform = ((QNode)node.GetParent()).GetComponent<RectTransform>();
-        QNode parentNode = (QNode)node.GetParent();
-        nodeTransform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-
-        // Copy Node distance from parent
-        node.Distance = parentNode.Distance;
-
-        // child type 0 = simple child 1 = if child 2 = else child 3 = head node
-        switch (childType)
-        {
-            case 0:
-                
-                node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x, parentTransform.localPosition.y - _spacing);
-                break;
-
-            case 1:
-                node.Distance /= 2;
-                node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x - node.Distance, parentTransform.localPosition.y - _spacing);
-                break;
-
-            case 2:
-                node.Distance /= 2;
-                node.GetComponent<RectTransform>().localPosition = new Vector2(parentTransform.localPosition.x + node.Distance, parentTransform.localPosition.y - _spacing);
-                break;
-        }
-    }
-
-    private void AddNodeOld(GameObject item, Value value) {
-        IqNode newNode = item.GetComponent<IqNode>();
-        if (newNode is QNodeIfElse) {
-            newNode = (QNodeIfElse)Instantiate(item.GetComponent<QNodeIfElse>(), transform);
-            newNode.SetChild(new QNodeEmpty());
-            ((QNodeIfElse)newNode).SetElseChild(new QNodeEmpty());
-        }
-        else if (newNode is QNode) {
-            newNode = (QNode)Instantiate(item.GetComponent<QNode>(), transform);
-            newNode.SetChild(new QNodeEmpty());
-        }
-
-        RectTransform newRect = ((QNode)newNode).GetComponent<RectTransform>();
-        newRect.localScale = new Vector3(0.1f, 0.1f);
-        newRect.localPosition = Vector3.down * _spacing * _currentLayer;
-
-        newNode.SetParent(currentNode);
-        newNode.SetInstruction(new QInstruction(item.name, value));
-
-        // first entry
-        if (headNode == null) {
-            headNode = currentNode = newNode;
-            currentNode.IsCurrent(true);
-            _currentLayer++;
-        }
-        else if (!HandleElseChild(newNode, newRect)) {
-            if (!(currentNode is QNodeIfElse)) {
-                _currentLayer++;
+        if (node.GetParent() == null) {
+            if (instructions.Count > 0) {
+                node.GetComponent<RectTransform>().localPosition = new Vector2(halfWidth, instructions[instructions.Count - 1].GetComponent<RectTransform>().localPosition.y - _spacing);
             }
-
-
-            currentNode.IsCurrent(false);
-            currentNode.SetChild(newNode);
-            currentNode = newNode;
-            currentNode.IsCurrent(true);
+            else { // first entry
+                node.GetComponent<RectTransform>().localPosition = new Vector2(halfWidth, 0);
+            }
         }
-
-
-        SetNextFreeNode(newNode);
-    }
-
-    private void SetNextFreeNode(IqNode newNode) {
-        IqNode nextNode = GetNextFreeNodeBF(headNode);
-        placeholderNode.GetComponent<QNode>().SetParent(nextNode.GetParent());
-        placeholderNode.localPosition = ((QNode)nextNode.GetParent()).GetComponent<RectTransform>().localPosition + Vector3.down * _spacing;
-    }
-
-    // TODO: WIP - trying to traverse recursively
-    private IqNode GetNextFreeNodeBF(IqNode node) {
-
-        if (node is QNodeIfElse) { // IF/ELSE node
-            QNodeIfElse ifNode = (QNodeIfElse)node;
-            if (ifNode.GetElseChild() is QNodeEmpty) { // ELSE leaf
-                ifNode.GetElseChild().SetParent(ifNode);
-                return (ifNode.GetElseChild());
+        else {
+            float parentNodeYPosition = ((QNode)node.GetParent()).GetComponent<RectTransform>().localPosition.y;
+            if (node.GetParent().GetChild() == node) {
+                node.GetComponent<RectTransform>().localPosition = new Vector2(halfWidth - _spacing, parentNodeYPosition - _spacing);
             }
             else {
-                return GetNextFreeNodeBF(ifNode.GetElseChild()); // traverse down
+                node.GetComponent<RectTransform>().localPosition = new Vector2(halfWidth + _spacing, parentNodeYPosition - _spacing);
             }
         }
-
-        if (node.GetChild() is QNodeEmpty) { // most left leaf (can be an IF leaf)
-            node.GetChild().SetParent(node);
-            return node.GetChild();
-        }
-
-        print("never reached");
-        return null; // SUX
-    }
-
-    private bool HandleElseChild(IqNode newNode, RectTransform newRect) {
-        QNodeIfElse ifNode = null;
-        if (currentNode.GetParent() is QNodeIfElse)
-            ifNode = (QNodeIfElse)currentNode.GetParent();
-        if (ifNode != null && (ifNode.GetElseChild() is QNodeEmpty)) {
-            newNode.SetParent(ifNode);
-            ifNode.SetElseChild(newNode);
-            newRect.localPosition = ifNode.transform.localPosition
-                + Vector3.down * _spacing
-                + Vector3.right * 1.2f * _spacing;
-
-            currentNode = ifNode.GetChild();
-            _currentLayer++;
-            return true; // handled ELSE
-        }
-
-        return false; // no ELSE
-    }
-
-    private void PrintSimpleGraph() {
-        IqNode node = headNode;
-        string output = "";
-
-        while (node != null) {
-            output += node.GetInstrucion().GetCode() + "\n";
-
-            if (node.GetParent() != null)
-                if (node.GetParent() is QNodeIfElse)
-                    if (((QNodeIfElse)node.GetParent()).GetElseChild() != null)
-                        output += "ELSE\n" + ((QNodeIfElse)node.GetParent()).GetElseChild().GetInstrucion().GetCode() + "\nEND\n";
-
-            node = node.GetChild();
-        }
-        //print(output);
-        SourceCodeOutput.Instance.SetText(output);
-    }
-
-    // [deprecated] just for testing
-    private void AddToList(GameObject item) {
-        GameObject newInstruction = (GameObject)Instantiate(item, transform);
-        RectTransform newRect = newInstruction.GetComponent<RectTransform>();
-        newRect.localScale = new Vector3(0.1f, 0.1f);
-        newRect.localPosition = Vector3.down * _spacing * instructions.Count;
-        instructions.Add(newInstruction);
     }
     #endregion
 }
-
-// not working with multiple if layers
-//private void AddNode(GameObject item, Value value) {
-//    IqNode newNode = item.GetComponent<IqNode>();
-//    if (newNode is QNodeIfElse) {
-//        newNode = (QNodeIfElse)Instantiate(item.GetComponent<QNodeIfElse>(), transform);
-//    }
-//    else if (newNode is QNode) {
-//        newNode = (QNode)Instantiate(item.GetComponent<QNode>(), transform);
-//    }
-
-//    RectTransform newRect = ((QNode)newNode).GetComponent<RectTransform>();
-//    newRect.localScale = new Vector3(0.1f, 0.1f);
-//    newRect.localPosition = Vector3.down * _spacing * _currentLayer;
-
-//    newNode.SetParent(currentNode);
-//    newNode.SetInstruction(new QInstruction(item.name, value));
-
-//    // first entry
-//    if (headNode == null) {
-//        headNode = currentNode = newNode;
-//        currentNode.IsCurrent(true);
-//        _currentLayer++;
-//    }
-//    else if (!HandleElseChild(newNode, newRect)) {
-//        if (!(currentNode is QNodeIfElse)) {
-//            _currentLayer++;
-//        }
-//        currentNode.IsCurrent(false);
-//        currentNode.SetChild(newNode);
-//        currentNode = newNode;
-//        currentNode.IsCurrent(true);
-//    }
-//}

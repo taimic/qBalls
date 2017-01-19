@@ -6,23 +6,18 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Graph {
-    class QNode : MonoBehaviour, IqNode {
+    public class QNode : MonoBehaviour, IqNode {
         private IqNode _parent, _child;
         private IQInstruction _instruction;
-        private float distance;
 
-        public string c1; // TODO: only for debugging
-
-        public float Distance
-        {
-            get
-            {
-                return distance;
+        private Value value;
+        public Value Value {
+            get {
+                return value;
             }
 
-            set
-            {
-                distance = value;
+            set {
+                this.value = value;
             }
         }
 
@@ -44,7 +39,6 @@ namespace Assets.Scripts.Graph {
         }
         public void SetChild(IqNode child) {
             _child = child;
-            c1 = child.GetType().Name;
         }
         public void SetInstruction(IQInstruction instrucion) {
             _instruction = instrucion;
