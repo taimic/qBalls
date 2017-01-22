@@ -31,6 +31,7 @@ public class UI_ShowHit : MonoBehaviour {
 
     void Update() {
         if (foundBall) {
+            hitMarkerRect.rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 180));
             hitMarkerRect.localPosition = new Vector2(-pos.x * ownRect.rect.width, -pos.y * ownRect.rect.height);
             hitMarkerCollider.enabled = true;
             foundBall = false;

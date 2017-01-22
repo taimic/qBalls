@@ -29,7 +29,7 @@ public class ConnectionManager : MonoBehaviour {
 
     #region private
     private void OnFoundBall(float x, float y) {
-        print("Found Ball @ x " + x + " y " + y);
+        //print("Found Ball @ x " + x + " y " + y);
     }
     #endregion
 

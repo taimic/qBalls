@@ -16,7 +16,7 @@ public class TCP_Client {
         while (!hasConnection) {
             // connect to server
             try {
-                System.Net.IPAddress adress = System.Net.IPAddress.Parse("10.42.1.134");
+                System.Net.IPAddress adress = System.Net.IPAddress.Parse("127.0.0.1");
                 client = new TcpClient();
                 client.Connect(adress, 4711);
             }
