@@ -47,5 +47,6 @@ public class UI_ShowHit : MonoBehaviour {
     private void OnFoundBall(float x, float y) {
         pos = new Vector2(x, y);
         foundBall = true;
+
     }
 }

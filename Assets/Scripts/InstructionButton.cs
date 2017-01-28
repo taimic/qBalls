@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class InstructionButton : MonoBehaviour {
+    public bool isValueButton;
+    public MenuManager menuManager;
     public void SendInstruction() {
         FlowBuilder.Instance.CurrentInstruction = this.name; // DaRa: mi no anderstand LoKr: is redundant atm
         FlowBuilder.Instance.AddInstruction(this.name);
@@ -15,7 +17,17 @@ public class InstructionButton : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other) {
         if (other.tag == "Ball") {
-            SendInstruction();
+            if (isValueButton)
+            {
+                SendInstructionWithValue();
+                menuManager.ShowEnergyPanel();
+                
+            }
+            else
+            {
+                SendInstruction();
+            }
+            
         }
     }
 }

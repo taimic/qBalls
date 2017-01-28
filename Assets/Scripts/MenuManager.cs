@@ -18,12 +18,26 @@ public class MenuManager : MonoBehaviour {
 
     public void ShowEnergyPanel() {
         instructionPanel.SetActive(false);
+        StartCoroutine(DoDelayEnergy());
+        
+    }
+
+    public IEnumerator DoDelayEnergy()
+    {
+        yield return new WaitForSeconds(0.2f);
         energyPanel.SetActive(true);
     }
 
     public void ShowInstructionPanel() {
-        instructionPanel.SetActive(true);
         energyPanel.SetActive(false);
+        
+        StartCoroutine(DoDelayInstruction());
+    }
+
+    public IEnumerator DoDelayInstruction()
+    {
+        yield return new WaitForSeconds(0.2f);
+        instructionPanel.SetActive(true);
     }
 
     private void HideIfInstructions() {

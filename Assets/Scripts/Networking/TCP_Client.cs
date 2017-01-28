@@ -4,10 +4,52 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System;
+using System.Xml;
 
 public class TCP_Client {
     public delegate void PositionDelegate(float x, float y);
     public static event PositionDelegate FoundBall;
+
+    private static XmlDocument LoadConfig()
+    {
+        string fileName = "Config.xml";
+        XmlDocument doc = new XmlDocument();
+        try
+        {
+            doc.Load(fileName);
+        }
+        catch (Exception e)
+        {
+            if (e is FileNotFoundException)
+                Console.WriteLine(fileName + " not found.");
+            else if (e is XmlException)
+                Console.WriteLine(fileName + " has invalid content.");
+
+            Console.WriteLine("NO CONFIG LOADED - USING DEFAULT VALUES");
+            return null;
+        }
+        return doc;
+    }
+
+    private static string ApplyConfig(XmlDocument doc)
+    {
+        if (doc == null)
+            return "";
+
+        if (doc.DocumentElement.ChildNodes.Count > 0)
+        {
+            Console.WriteLine("********* ReadingConfig... *********");
+
+            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+            {
+                if (node.Name == "IP")
+                {
+                    return node.InnerText;
+                }
+            }
+        }
+        return "";
+    }
 
     public static void StartClient() {
         bool hasConnection = false;
@@ -16,7 +58,7 @@ public class TCP_Client {
         while (!hasConnection) {
             // connect to server
             try {
-                System.Net.IPAddress adress = System.Net.IPAddress.Parse("127.0.0.1");
+                System.Net.IPAddress adress = System.Net.IPAddress.Parse(ApplyConfig(LoadConfig()));
                 client = new TcpClient();
                 client.Connect(adress, 4711);
             }
