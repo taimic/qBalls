@@ -27,7 +27,7 @@ public class UI_ShowHit : MonoBehaviour {
 
         TCP_Client.FoundBall += OnFoundBall;
 
-        StartCoroutine(TestEffects());
+        //StartCoroutine(TestEffects());
     }
 
     void OnDestroy() {

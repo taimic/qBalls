@@ -75,7 +75,7 @@ public class CodeManager : MonoBehaviour {
     }
 
     private void CreateNewBotName() {
-        QInstrucionFactory.botName = "Bot_" + DateTime.Now.Day + DateTime.Now.Month + DateTime.Now.Ticks;
+        QInstrucionFactory.botName = "Q_" + SessionMaster.Instance.botName + "_" + DateTime.Now.Year + DateTime.Now.DayOfYear + DateTime.Now.Hour + DateTime.Now.Minute;
     }
 
     private void BotFinished() {
@@ -89,11 +89,13 @@ public class CodeManager : MonoBehaviour {
             EventBotReady();
 
         SourceCodeOutput.Instance.Reset();
-        //SceneManager.LoadScene(1);// SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(2);// SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void WriteFile() {
-        using (StreamWriter outputFile = new StreamWriter(QInstrucionFactory.botName + ".m", true)) {
+        string path = "bots/" + QInstrucionFactory.botName + ".m";
+        System.IO.File.Delete(path);
+        using (StreamWriter outputFile = new StreamWriter(path, true)) {
             outputFile.Write(botCode);
         }
     }
