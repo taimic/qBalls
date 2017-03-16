@@ -7,8 +7,17 @@ using UnityEngine.SceneManagement;
 public class SessionMaster : Singleton<SessionMaster> {
     public string botName;
 
+    private void Start() {
+        Initialize();
+    }
+
     private void OnLevelWasLoaded(int level) {
+        Initialize();
+    }
+
+    private void Initialize() {
         botName = string.Empty;
+        UI_Manager.Instance.ToStartScreen();
     }
 
     public void SetName(string input) {
