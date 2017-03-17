@@ -18,6 +18,7 @@ public class SessionMaster : Singleton<SessionMaster> {
     private void Initialize() {
         botName = string.Empty;
         UI_Manager.Instance.ToStartScreen();
+        Debug.LogError("START");
     }
 
     public void SetName(string input) {
@@ -25,6 +26,7 @@ public class SessionMaster : Singleton<SessionMaster> {
         input = Regex.Replace(input, @"[^\u0000-\u007F]+", string.Empty);
 
         botName = input;
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene(1);
+        UI_Manager.Instance.ToPlayScreen();
     }
 }

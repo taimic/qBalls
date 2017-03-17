@@ -89,7 +89,7 @@ public class CodeManager : MonoBehaviour {
             EventBotReady();
 
         SourceCodeOutput.Instance.Reset();
-        SceneManager.LoadScene(2);// SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        UI_Manager.Instance.ToEndScreen();//SceneManager.LoadScene(2);// SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void WriteFile() {
