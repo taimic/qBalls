@@ -1,4 +1,4 @@
-MODULE Q__201776756;
+MODULE Q_asdf_2017761013;
 IMPORT Bot, Math, Random;
 VAR bearing, distance, isClone:REAL;
 
@@ -12,14 +12,14 @@ END BatLevel;
 
 BEGIN
 WHILE TRUE DO
-Bot.Clone();
-Bot.Clone();
-Bot.Clone();
-Bot.Clone();
-Bot.Clone();
-Bot.Clone();
-Bot.Clone();
-Bot.Clone();
+(*SKIP*)
+(*SKIP*)
+(*SKIP*)
+(*SKIP*)
+(*SKIP*)
+(*SKIP*)
+(*SKIP*)
+(*SKIP*)
 Bot.Sleep(0.4);
 END
-END Q__201776756.
+END Q_asdf_2017761013.

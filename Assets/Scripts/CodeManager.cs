@@ -79,11 +79,11 @@ public class CodeManager : MonoBehaviour {
     }
 
     private void BotFinished() {
+        CreateNewBotName();
+
         WriteFile();
         botCode = "";
         addedNodes = 0;
-
-        CreateNewBotName();
 
         if (EventBotReady != null)
             EventBotReady();

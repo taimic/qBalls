@@ -8,14 +8,16 @@ public class UI_Manager : Singleton<UI_Manager> {
 
 
     private void OnLevelWasLoaded(int level) {
+
         //Init();
         //ToStartScreen();
     }
     // Use this for initialization
-    void Start () {
+    void Awake () {
+        Init();
         //Init();
         //ToStartScreen();
-	}
+    }
 
     private void Update() {
         if (uiEnd == null)
@@ -36,7 +38,7 @@ public class UI_Manager : Singleton<UI_Manager> {
     }
 
     private void LoadStartScreen() {
-        SceneManager.LoadScene(0);
+        ToStartScreen();
     }
 
     IEnumerator DelayedStart() {
@@ -45,7 +47,6 @@ public class UI_Manager : Singleton<UI_Manager> {
     }
 
     public void ToStartScreen() {
-        Init();
         Debug.LogError("to start");
         uiStart.SetActive(true);
         //uiCode.SetActive(false);

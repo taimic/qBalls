@@ -1,4 +1,4 @@
-MODULE Q__201776813;
+MODULE Q__2017761013;
 IMPORT Bot, Math, Random;
 VAR bearing, distance, isClone:REAL;
 
@@ -12,13 +12,9 @@ END BatLevel;
 
 BEGIN
 WHILE TRUE DO
-Bot.ScanForTreats();
-IF Bot.HasNextScan() THEN
-    Bot.GetNextScan(bearing, distance);
 Bot.Clone();
-ELSE
 Bot.Clone();
-END
+Bot.Clone();
 Bot.Clone();
 Bot.Clone();
 Bot.Clone();
@@ -26,4 +22,4 @@ Bot.Clone();
 Bot.Clone();
 Bot.Sleep(0.4);
 END
-END Q__201776813.
+END Q__2017761013.

@@ -1,4 +1,4 @@
-MODULE Q__20177682;
+MODULE Q__2017761012;
 IMPORT Bot, Math, Random;
 VAR bearing, distance, isClone:REAL;
 
@@ -22,4 +22,4 @@ Bot.Clone();
 Bot.Clone();
 Bot.Sleep(0.4);
 END
-END Q__20177682.
+END Q__2017761012.

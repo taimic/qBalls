@@ -2,65 +2,82 @@ Initialize engine version: 5.5.0f3 (38b4efef76f0)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
-    Renderer: NVIDIA GeForce GTX 970 (ID=0x13c2)
-    Vendor:   NVIDIA
-    VRAM:     3072 MB
-    Driver:   21.21.13.7654
+    Renderer: Intel(R) HD Graphics 520 (ID=0x1916)
+    Vendor:   Intel
+    VRAM:     2111 MB
+    Driver:   20.19.15.4483
 Begin MonoManager ReloadAssembly
-Platform assembly: D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
-Loading D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-- Completed reload, in  0.088 seconds
-Platform assembly: D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\System.Core.dll (this message is harmless)
-Platform assembly: D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\System.dll (this message is harmless)
+Platform assembly: C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+- Completed reload, in  0.241 seconds
+Platform assembly: C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\System.dll (this message is harmless)
+OnLevelWasLoaded was found on UI_Manager
+This message has been deprecated and will be removed in a later version of Unity.
+Add a delegate to SceneManager.sceneLoaded instead to get notifications after scene loading has completed
+ 
+(Filename:  Line: 382)
+
 OnLevelWasLoaded was found on SessionMaster
 This message has been deprecated and will be removed in a later version of Unity.
 Add a delegate to SceneManager.sceneLoaded instead to get notifications after scene loading has completed
  
 (Filename:  Line: 382)
 
-desktop: 1920x1080 60Hz; virtual: 3840x1080 at -1920,0
+desktop: 2560x1440 60Hz; virtual: 6360x1575 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 0.999573 ms
+UnloadTime: 2.347944 ms
+Platform assembly: C:\Data\Repos\IGT_qBalls2\Executables\qBalls_Data\Managed\System.Xml.dll (this message is harmless)
 [Singleton] An instance of SessionMaster is needed in the scene, so '(singleton) SessionMaster (UnityEngine.GameObject)' was created with DontDestroyOnLoad.
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.731900 ms
+[Singleton] An instance of UI_Manager is needed in the scene, so '(singleton) UI_Manager (UnityEngine.GameObject)' was created with DontDestroyOnLoad.
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 926.
-Total: 0.486028 ms (FindLiveObjects: 0.049777 ms CreateObjectMapping: 0.035246 ms MarkObjects: 0.383999 ms  DeleteObjects: 0.004019 ms)
+to start
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Platform assembly: D:\Repositories\IGT_qBalls2\Executables\qballs_Data\Managed\System.Xml.dll (this message is harmless)
-********* ReadingConfig... *********
-Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 1.189099 ms
-
-Unloading 24 unused Assets to reduce memory usage. Loaded Objects now: 498.
-Total: 0.407806 ms (FindLiveObjects: 0.036792 ms CreateObjectMapping: 0.014531 ms MarkObjects: 0.243014 ms  DeleteObjects: 0.113159 ms)
-
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.272695 ms
-
-Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 511.
-Total: 0.319690 ms (FindLiveObjects: 0.034937 ms CreateObjectMapping: 0.014222 ms MarkObjects: 0.267439 ms  DeleteObjects: 0.002782 ms)
-
-Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.312579 ms
-
-Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 926.
-Total: 0.506434 ms (FindLiveObjects: 0.052251 ms CreateObjectMapping: 0.035555 ms MarkObjects: 0.414608 ms  DeleteObjects: 0.003710 ms)
+START
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 ********* ReadingConfig... *********
+to play
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+to end
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+to start
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+to play
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+to end
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+to start
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 1d90 -> priority: 1 
+  Thread -> id: d84 -> priority: 1 
